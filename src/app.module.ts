@@ -6,6 +6,7 @@ import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { ArcjetModule, ArcjetGuard, shield, fixedWindow } from '@arcjet/nest';
 import { PrismaModule } from './lib/database/prisma.module.js';
+import { UserModule } from './module/user/user.module.js';
 import { auth } from './lib/auth/auth.js';
 
 @Module({
@@ -33,6 +34,7 @@ import { auth } from './lib/auth/auth.js';
     AuthModule.forRoot({
       auth,
     }),
+    UserModule,
   ],
   controllers: [AppController],
   providers: [
