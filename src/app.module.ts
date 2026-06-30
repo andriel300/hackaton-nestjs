@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AuthModule } from '@thallesp/nestjs-better-auth';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { ArcjetModule, ArcjetGuard, shield, fixedWindow } from '@arcjet/nest';
 import { PrismaModule } from './lib/database/prisma.module.js';
+import { auth } from './lib/auth/auth.js';
 
 @Module({
   imports: [
@@ -28,6 +30,9 @@ import { PrismaModule } from './lib/database/prisma.module.js';
       }),
     }),
     PrismaModule,
+    AuthModule.forRoot({
+      auth,
+    }),
   ],
   controllers: [AppController],
   providers: [
