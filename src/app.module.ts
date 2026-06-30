@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { AppController } from './app.controller.js';
+import { AppService } from './app.service.js';
 import { ArcjetModule, ArcjetGuard, shield, fixedWindow } from '@arcjet/nest';
+import { PrismaModule } from './lib/database/prisma.module.js';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { ArcjetModule, ArcjetGuard, shield, fixedWindow } from '@arcjet/nest';
         ],
       }),
     }),
+    PrismaModule,
   ],
   controllers: [AppController],
   providers: [
