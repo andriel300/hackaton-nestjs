@@ -16,17 +16,19 @@ enum Role {
 }
 
 model User {
-  id           String    @id @default(cuid())
-  name         String?
-  email        String    @unique
+  id            String   @id @default(cuid())
+  name          String?
+  email         String   @unique
   emailVerified Boolean  @default(false)
-  image        String?
-  role         Role      @default(PARTICIPANT)
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  image         String?
+  role          Role     @default(PARTICIPANT)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  accounts     Account[]
-  sessions     Session[]
+  accounts              Account[]
+  sessions              Session[]
+  hackathons            Hackathon[]
+  hackathonParticipants HackathonParticipant[]
 }
 
 model Session {
@@ -39,7 +41,7 @@ model Session {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Account {
@@ -57,7 +59,7 @@ model Account {
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
 
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([providerId, accountId])
 }
@@ -71,4 +73,31 @@ model Verification {
   updatedAt  DateTime @updatedAt
 
   @@unique([identifier, value])
+}
+
+model Hackathon {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  startDate   DateTime
+  endDate     DateTime
+  isActive    Boolean  @default(true)
+  authorId    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  author       User                   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  participants HackathonParticipant[]
+}
+
+model HackathonParticipant {
+  id          String   @id @default(cuid())
+  hackathonId String
+  userId      String
+  createdAt   DateTime @default(now())
+
+  hackathon Hackathon @relation(fields: [hackathonId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([hackathonId, userId])
 }

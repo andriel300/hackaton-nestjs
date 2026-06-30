@@ -8,6 +8,7 @@ import { ArcjetModule, ArcjetGuard, shield, fixedWindow } from '@arcjet/nest';
 import { PrismaModule } from './lib/database/prisma.module.js';
 import { UserModule } from './module/user/user.module.js';
 import { auth } from './lib/auth/auth.js';
+import { HackathonModule } from './module/hackathon/hackathon.module.js';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { auth } from './lib/auth/auth.js';
       auth,
     }),
     UserModule,
+    HackathonModule,
   ],
   controllers: [AppController],
   providers: [

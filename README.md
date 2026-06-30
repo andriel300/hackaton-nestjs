@@ -1,98 +1,253 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Hackathon Management API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A production-ready REST API for managing hackathons, built with [NestJS](https://nestjs.com/), [Prisma](https://prisma.io/), and [Better Auth](https://www.better-auth.com/). Features role-based access control (participants and administrators), input validation, rate limiting, and unified response formatting.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+## Table of Contents
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+- [Environment Variables](#environment-variables)
+- [API Endpoints](#api-endpoints)
+- [Response Format](#response-format)
+- [Project Structure](#project-structure)
+- [Database](#database)
+- [Scripts](#scripts)
 
-## Project setup
+---
 
-```bash
-$ pnpm install
-```
+## Features
 
-## Compile and run the project
+- **Authentication** -- Email and password sign-up and sign-in, plus Google OAuth integration.
+- **Role-Based Access** -- Two roles: `PARTICIPANT` and `ADMIN`. Write operations (create, update, delete) are restricted to administrators.
+- **Hackathon Management** -- Create, read, update, and delete hackathons. Each hackathon has a name, description, start and end dates, and an active status.
+- **Participant Registration** -- Users with the `PARTICIPANT` role can join active hackathons. Duplicate registrations are prevented.
+- **Input Validation** -- All request payloads are validated with clear error messages returned as structured objects.
+- **Unified Response Format** -- Every response follows a consistent structure: `{ statusCode, message, data }`.
+- **Rate Limiting & Security** -- Arcjet shields the API against common attacks (SQL injection, XSS) and limits request frequency.
+- **PostgreSQL Database** -- Schema managed via Prisma migrations.
 
-```bash
-# development
-$ pnpm run start
+---
 
-# watch mode
-$ pnpm run start:dev
+## Tech Stack
 
-# production mode
-$ pnpm run start:prod
-```
+| Layer          | Technology                                                    |
+| -------------- | ------------------------------------------------------------- |
+| Framework      | [NestJS](https://nestjs.com/)                                 |
+| Language       | TypeScript                                                    |
+| Database       | PostgreSQL                                                    |
+| ORM            | [Prisma](https://prisma.io/)                                  |
+| Authentication | [Better Auth](https://www.better-auth.com/)                   |
+| Validation     | class-validator + class-transformer                           |
+| Security       | [Arcjet](https://arcjet.com/) (shield + rate limiting)        |
+| Package        | pnpm                                                          |
 
-## Run tests
+---
 
-```bash
-# unit tests
-$ pnpm run test
+## Getting Started
 
-# e2e tests
-$ pnpm run test:e2e
+### Prerequisites
 
-# test coverage
-$ pnpm run test:cov
-```
+- Node.js 22+
+- pnpm
+- A PostgreSQL database (local or hosted)
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### Installation
 
 ```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
+# Clone the repository
+git clone <repository-url>
+cd hackaton-nestjs
+
+# Install dependencies
+pnpm install
+
+# Set up environment variables
+cp .env.example .env
+# Fill in your DATABASE_URL and other credentials
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### Database Setup
 
-## Resources
+```bash
+# Run migrations to create the database schema
+pnpm run db:migrate
 
-Check out a few resources that may come in handy when working with NestJS:
+# (Optional) Open Prisma Studio to inspect data
+pnpm run db:studio
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### Start the Server
 
-## Support
+```bash
+# Development mode with hot reload
+pnpm run start:dev
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+The server starts at `http://localhost:3000`.
 
-## Stay in touch
+---
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## Environment Variables
+
+| Variable            | Description                     | Required |
+| ------------------- | ------------------------------- | -------- |
+| `DATABASE_URL`      | PostgreSQL connection string    | Yes      |
+| `ARCJET_KEY`        | Arcjet API key for security     | Yes      |
+| `GOOGLE_CLIENT_ID`  | Google OAuth client ID          | No       |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret   | No       |
+
+---
+
+## API Endpoints
+
+### Authentication
+
+Base path: `/api/auth`
+
+| Method | Path                 | Description           | Auth Required |
+| ------ | -------------------- | --------------------- | ------------- |
+| POST   | `/api/auth/sign-up/email` | Register with email and password | No     |
+| POST   | `/api/auth/sign-in/email` | Sign in with email and password  | No     |
+| GET    | `/api/auth/session`       | Get current session             | Yes    |
+
+### Users
+
+Base path: `/user`
+
+| Method | Path         | Description          | Role Required |
+| ------ | ------------ | -------------------- | ------------- |
+| GET    | `/user/all`  | List all users       | ADMIN         |
+| GET    | `/user/:id`  | Get user by ID       | ADMIN         |
+
+### Hackathons
+
+Base path: `/hackathon`
+
+| Method | Path              | Description                    | Role Required |
+| ------ | ----------------- | ------------------------------ | ------------- |
+| POST   | `/hackathon`      | Create a new hackathon         | ADMIN         |
+| GET    | `/hackathon`      | List all hackathons            | Authenticated |
+| GET    | `/hackathon/:id`  | Get a hackathon by ID          | Authenticated |
+| PATCH  | `/hackathon/:id`  | Update a hackathon             | ADMIN         |
+| DELETE | `/hackathon/:id`  | Delete a hackathon             | ADMIN         |
+| POST   | `/hackathon/:id/join` | Register as a participant  | PARTICIPANT   |
+
+### Request Examples
+
+**Create a hackathon**
+
+```json
+POST /hackathon
+{
+  "name": "Climate Hackathon 2026",
+  "description": "A 48-hour event focused on building climate resilience solutions.",
+  "startsAt": "2026-08-15T09:00:00.000Z",
+  "endsAt": "2026-08-17T18:00:00.000Z",
+  "isActive": true
+}
+```
+
+**Join a hackathon**
+
+```bash
+POST /hackathon/<hackathon-id>/join
+```
+
+No request body required. The authenticated user's ID is used automatically.
+
+---
+
+## Response Format
+
+Every response follows this structure:
+
+```json
+{
+  "statusCode": 200,
+  "message": "Hackathon created successfully",
+  "data": { ... }
+}
+```
+
+Validation errors follow the same structure:
+
+```json
+{
+  "statusCode": 400,
+  "message": "Validation failed",
+  "data": [
+    { "property": "name", "message": "name must be longer than or equal to 3 characters" },
+    { "property": "startsAt", "message": "startsAt must be a future date" }
+  ]
+}
+```
+
+---
+
+## Project Structure
+
+```
+src/
+  app.module.ts          -- Root module
+  app.controller.ts      -- Health check
+  main.ts                -- Application entry point
+  common/
+    decorators/          -- @ResponseMessage() decorator
+    filters/             -- Global exception filter
+    interceptors/        -- Global response interceptor
+    pipes/               -- Global validation pipe
+  lib/
+    auth/                -- Better Auth configuration
+    database/            -- Prisma service and module
+  module/
+    user/                -- User management module
+    hackathon/           -- Hackathon CRUD and participant registration
+      dtos/              -- Request validation DTOs
+prisma/
+  schema.prisma          -- Database schema
+  migrations/            -- Migration history
+```
+
+---
+
+## Database
+
+The database schema is managed through Prisma migrations. Key models:
+
+- **User** -- Stores user accounts with roles (PARTICIPANT or ADMIN).
+- **Hackathon** -- Stores hackathon events with dates, descriptions, and active status.
+- **HackathonParticipant** -- Tracks which users have joined which hackathons. Enforces a unique constraint on the combination of hackathon ID and user ID.
+- **Session** -- Authentication session storage.
+- **Account** -- OAuth and credential account storage.
+
+### View Data
+
+```bash
+pnpm run db:studio
+```
+
+---
+
+## Scripts
+
+| Command               | Description                               |
+| --------------------- | ----------------------------------------- |
+| `pnpm run start`      | Start the server                          |
+| `pnpm run start:dev`  | Start with hot reload                     |
+| `pnpm run build`      | Compile the project                       |
+| `pnpm run lint`       | Run ESLint                                |
+| `pnpm run test`       | Run unit tests                            |
+| `pnpm run test:e2e`   | Run end-to-end tests                      |
+| `pnpm run db:migrate` | Run Prisma migrations                     |
+| `pnpm run db:generate`| Regenerate the Prisma client              |
+| `pnpm run db:studio`  | Open Prisma Studio (database GUI)         |
+| `pnpm run db:format`  | Format the Prisma schema file             |
+
+---
 
 ## License
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+This project is [MIT licensed](LICENSE).
